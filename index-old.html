@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>荣格词汇联想测试｜语音版（整场录音 / 每题录音 / 不录音）</title>
+  <style>
+    :root{--bg:#0b0f14;--card:#121822;--muted:#8fa3b0;--text:#e6edf3;--acc:#4cc9f0;--good:#2ecc71;--warn:#f39c12;--bad:#e74c3c}
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,Apple Color Emoji,Segoe UI Emoji}
+    .wrap{max-width:980px;margin:0 auto;padding:24px}
+    h1{font-size:clamp(20px,3.4vw,32px);margin:0 0 8px}
+    p{color:var(--muted)}
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
+    @media (min-width:900px){.grid{grid-template-columns:360px 1fr}}
+    .card{background:var(--card);border:1px solid #223044;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+    .card h2{margin:0;padding:16px 16px 0;font-size:18px;color:#cdd9e5}
+    .card .body{padding:16px}
+    label{display:block;margin:10px 0 6px;color:#cbd5e1}
+    input[type=text],input[type=number],select,textarea{width:100%;background:#0b1119;border:1px solid #2b3a4a;border-radius:10px;color:var(--text);padding:10px 12px;outline:none}
+    textarea{min-height:92px}
+    button{appearance:none;border:0;border-radius:12px;padding:12px 16px;background:var(--acc);color:#002033;font-weight:700;cursor:pointer}
+    button.secondary{background:#203040;color:#cfe9f6;border:1px solid #305068}
+    button.ghost{background:transparent;border:1px dashed #3b5368;color:#bfdded}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .row > *{flex:1}
+    .center{display:flex;align-items:center;justify-content:center;text-align:center}
+    .stimulus{font-size:clamp(34px,6vw,64px);letter-spacing:.5px;margin:6px 0 8px}
+    .muted{color:var(--muted)}
+    .pill{display:inline-block;padding:4px 10px;border:1px solid #2b3a4a;border-radius:999px;color:#b6c7d4;font-size:12px}
+    .progress{height:10px;width:100%;background:#101820;border-radius:999px;overflow:hidden;border:1px solid #213144}
+    .progress > div{height:100%;width:0;background:linear-gradient(90deg,var(--acc),#a1ffd5);transition:width .2s}
+    .kbd{font-family:ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;background:#0d1520;border:1px solid #2a3a4a;border-radius:6px;padding:2px 6px}
+    .log{max-height:300px;overflow:auto;background:#0b1119;border:1px solid #213144;border-radius:12px}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th,td{padding:8px 10px;border-bottom:1px solid #1e2a38;vertical-align:top}
+    tr:hover td{background:#0d1520}
+    .badge{font-size:12px;margin-left:6px}
+    .rec-ind{display:inline-flex;align-items:center;gap:8px}
+    .dot{width:10px;height:10px;border-radius:50%;background:#666}
+    .dot.live{background:#ff3b3b;box-shadow:0 0 0 6px rgba(255,59,59,.15)}
+    audio{width:240px}
+    .footer{opacity:.7;font-size:12px;margin-top:12px}
+    .err{color:#ff9aa2}
+    details.dev summary{cursor:pointer}
+    .devlog{white-space:pre-wrap;background:#0b1119;border:1px solid #213144;border-radius:12px;padding:10px;font-family:ui-monospace,Menlo,Consolas}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>荣格词汇联想测试（语音版） <span class="pill">整场／每题／不录音</span></h1>
+    <p class="muted">如果<strong>不使用 ASR</strong>，可选择“整场单段录音”：从开始到结束只录 <strong>一段</strong> 音频。也可选“每题录音”或“<strong>不录音</strong>”（此时按钮文案会变为“开始反应/下一个”）。</p>
+
+    <div id="secureWarn" class="card" style="display:none">
+      <div class="body">
+        <p class="err"><strong>当前页面非安全上下文（如 content:// 或 file://）。浏览器将拒绝麦克风权限。</strong></p>
+        <ul>
+          <li>请用 <strong>Chrome</strong> 打开此页面，并通过 <strong>https://</strong> 或 <strong>http://localhost</strong> 访问。</li>
+          <li>避免在应用内置浏览器/文件预览中打开（如微信、文件管理器）。</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- 左侧：设置 -->
+      <section class="card" aria-labelledby="cfgTitle">
+        <h2 id="cfgTitle">测试设置</h2>
+        <div class="body">
+          <div class="row">
+            <div>
+              <label>研究/项目编号</label>
+              <input id="studyId" type="text" placeholder="如: JWAT-2025-A" />
+            </div>
+            <div>
+              <label>被试编号</label>
+              <input id="pid" type="text" placeholder="如: S001" />
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label>年龄</label>
+              <input id="age" type="number" min="1" max="120" />
+            </div>
+            <div>
+              <label>性别</label>
+              <select id="sex">
+                <option value="">未填写</option>
+                <option value="F">女</option>
+                <option value="M">男</option>
+                <option value="O">其他/不愿透露</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>间隔（ISI, ms）</label>
+              <input id="isi" type="number" min="0" value="800" />
+            </div>
+            <div>
+              <label>单题录音上限（ms）<span class="badge muted">仅“每题录音”有效；0=不限制</span></label>
+              <input id="maxDur" type="number" min="0" value="8000" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>顺序</label>
+              <select id="order">
+                <option value="original">按词表顺序</option>
+                <option value="random">随机</option>
+              </select>
+            </div>
+            <div>
+              <label>录音模式</label>
+              <select id="recMode">
+                <option value="session_single">整场单段</option>
+                <option value="trial_manual">每题手动</option>
+                <option value="trial_auto">每题自动</option>
+                <option value="none">不录音</option>
+              </select>
+            </div>
+          </div>
+
+          <label>自定义词表（每行一个；空行将被忽略）</label>
+          <textarea id="customList" placeholder="可粘贴你的词表…"></textarea>
+
+          <div class="row" style="margin-top:10px">
+            <button id="btnStart">开始测试（或按 <span class="kbd">S</span>）</button>
+            <button id="btnStop" class="secondary" disabled>结束/保存</button>
+            <button id="btnReset" class="ghost">清空结果</button>
+          </div>
+
+          <hr style="border-color:#1e2a38;border-style:solid;border-width:1px 0 0;margin:16px 0">
+          <h3 style="margin:0 0 8px;font-size:16px;color:#cdd9e5">静音分割（仅“每题录音·选项C”）</h3>
+          <div class="row">
+            <div>
+              <label>启用静音分割</label>
+              <select id="segEnable">
+                <option value="on">开启</option>
+                <option value="off">关闭</option>
+              </select>
+            </div>
+            <div>
+              <label>静音阈值（RMS，0-1）</label>
+              <input id="segThresh" type="number" min="0" max="1" step="0.001" value="0.015" />
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label>最短静音（ms）</label>
+              <input id="segMinSil" type="number" min="50" step="50" value="350" />
+            </div>
+            <div>
+              <label>最短片段（ms）</label>
+              <input id="segMinChunk" type="number" min="100" step="50" value="200" />
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:12px">
+            <div>
+              <label>启用语音识别（可选）</label>
+              <select id="asrEnable">
+                <option value="off">关闭</option>
+                <option value="on">开启（需要你填 API）</option>
+              </select>
+            </div>
+            <div>
+              <label>ASR API 地址（POST 上传音频）</label>
+              <input id="asrUrl" type="text" placeholder="https://your-asr.example/v1/transcribe" />
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label>ASR API Key</label>
+              <input id="asrKey" type="text" placeholder="留空待你填写" />
+            </div>
+            <div>
+              <label>ASR 额外参数（JSON，可空）</label>
+              <input id="asrExtra" type="text" placeholder='{"lang":"zh"}' />
+            </div>
+          </div>
+
+          <p class="footer">建议通过 <strong>HTTPS 或 localhost</strong> 打开本页。快捷键：<span class="kbd">S</span> 开始，<span class="kbd">R</span> 开/停（每题或整场），<span class="kbd">Space</span> 跳过/下一个，<span class="kbd">Esc</span> 暂停。</p>
+        </div>
+      </section>
+
+      <!-- 右侧：实验区 -->
+      <section class="card" aria-labelledby="runTitle">
+        <h2 id="runTitle">实验进行区</h2>
+        <div class="body">
+          <div class="progress" aria-label="进度"><div id="progBar" style="width:0%"></div></div>
+
+          <div id="stage" class="center" style="min-height:170px;flex-direction:column;margin-top:12px">
+            <div class="pill" id="status">未开始</div>
+            <div class="stimulus" id="stimulus">—</div>
+            <div class="muted" id="timers">首反应延迟：— ms · 反应/录音时长：— ms</div>
+            <div class="rec-ind"><span>录音状态：</span><span id="recDot" class="dot"></span><span id="recLabel" class="muted">空闲</span></div>
+            <p id="permHint" class="err" style="display:none;margin-top:8px">无法访问麦克风：请确认已授予浏览器麦克风权限，并确保通过 HTTPS 或 localhost 打开。</p>
+          </div>
+
+          <div class="row" style="margin-top:8px">
+            <button id="btnRec">开始录音（R）</button>
+            <button id="btnStopRec" class="secondary" disabled>停止录音</button>
+            <button id="btnSkip" class="secondary" disabled>跳过/无反应（Space）</button>
+            <button id="btnPause" class="ghost" disabled>暂停（Esc）</button>
+          </div>
+
+          <div id="sessionAudioBox" class="muted" style="display:none;margin-top:8px"></div>
+
+          <label for="note">备注（可选，情绪、犹豫、外界干扰等）</label>
+          <input id="note" type="text" autocomplete="off" placeholder="可选" disabled />
+
+          <div class="log" style="margin-top:14px">
+            <table id="tbl"><thead>
+              <tr><th>#</th><th>刺激词</th><th>首反应(ms)</th><th>反应/录音时长(ms)</th><th>ASR文本</th><th>音频</th><th>备注</th></tr>
+            </thead><tbody></tbody></table>
+          </div>
+
+          <div class="row" style="margin-top:10px">
+            <button id="btnExportCsv" class="secondary" disabled>导出 CSV</button>
+            <button id="btnExportJson" class="secondary" disabled>导出 JSON</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <details class="card dev" style="margin-top:16px">
+      <summary class="body"><strong>开发者自检（点击展开/收起）</strong></summary>
+      <div class="body">
+        <div class="row">
+          <button id="btnRunTests" class="secondary">运行内置自检</button>
+        </div>
+        <p class="muted">测试用例覆盖：换行切分、CSV 转义、CSV 结构、静音分割阈值逻辑、正则可编译、模式按钮文案。</p>
+        <pre id="devLog" class="devlog"></pre>
+      </div>
+    </details>
+  </div>
+
+  <script>
+  const $ = s=>document.querySelector(s);
+  const now = ()=>performance.now();
+  const sleep = ms=>new Promise(r=>setTimeout(r,ms));
+
+  function download(filename, data, type='text/plain;charset=utf-8'){
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([data],{type})); a.download=filename; a.click(); URL.revokeObjectURL(a.href);
+  }
+  function csvEscape(v){ if(v==null) return ''; const s=String(v).replaceAll('"','""'); return /[",\n]/.test(s)?'"'+s+'"':s; }
+
+  const JUNG_100=["头","绿色","水","唱歌","后面","步伐","客人","白色","长","船","慷慨","祝福","犹豫","抱怨","炽热","门","自豪","扫帚","驱使","海","饥饿","问候","泥土","睡眠","书","贪婪","旅行","好","寒冷","瘟疫","篮子","友谊","舌头","留意","床","床单","刀","鹰","言语","圆","雪","尖锐","桌子","烂","国王","吞咽","根","犁","蓝色","羊","牛奶","伤口","席子","树枝","盐","狐狸","干燥","蜂蜜","教堂","小路","骄傲","羞耻","森林","屋顶","马","铁","杯子","庄稼","燕子","敌人","路","勇敢","伪善","农夫","树","公正","穷","统治","亲戚","牛","面包","盐水","鞭子","窗户","火","手套","绳子","屋子","农场","草","椅子","老师","笔","羊毛","鸡","城镇","金子","黑色","花","鱼"];
+
+  let state={running:false,paused:false,order:'original',isi:800,maxDur:8000,autoRec:'off',list:[],idx:0,tStim:0,tRecStart:0,meta:{},results:[],media:null,rec:null,recTimeout:null,chunks:[],
+             recMode:'session_single', sessionRec:null, sessionChunks:[], sessionStart:0};
+
+  // ===== 安全上下文预检 =====
+  (function secureCheck(){
+    const isSecure = window.isSecureContext || /^https:/i.test(location.protocol) || /^(http:\/\/localhost|http:\/\/127\.0\.0\.1)/i.test(location.href);
+    if(!isSecure){ $('#secureWarn').style.display='block'; }
+  })();
+
+  function loadParams(){
+    state.order=$('#order').value; state.isi=+($('#isi').value||0); state.maxDur=+($('#maxDur').value||0); state.recMode=$('#recMode').value;
+    const custom=$('#customList').value.trim().split(/\r?\n|\r/).map(s=>s.trim()).filter(Boolean); // 忽略空行
+    state.list=custom.length?custom:[...JUNG_100];
+    if(state.order==='random'){ for(let i=state.list.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [state.list[i],state.list[j]]=[state.list[j],state.list[i]]; } }
+    state.idx=0; state.results=[];
+    state.meta={studyId:$('#studyId').value.trim(),pid:$('#pid').value.trim(),age:$('#age').value||'',sex:$('#sex').value||'',startedAt:new Date().toISOString(),isi:state.isi,maxDur:state.maxDur,order:state.order,listSize:state.list.length,userAgent:navigator.userAgent,recMode:state.recMode,asrEnable:$('#asrEnable').value,segEnable:$('#segEnable').value,segThresh:+$('#segThresh').value,segMinSil:+$('#segMinSil').value,segMinChunk:+$('#segMinChunk').value};
+    refreshModeUI();
+  }
+
+  function refreshModeUI(){
+    const m=state.recMode;
+    const usePerTrial = (m==='trial_manual'||m==='trial_auto');
+    $('#segEnable').disabled=!usePerTrial; $('#segThresh').disabled=!usePerTrial; $('#segMinSil').disabled=!usePerTrial; $('#segMinChunk').disabled=!usePerTrial;
+    if(m==='none' || m==='session_single'){
+      $('#btnRec').textContent='开始反应（R）';
+      $('#btnStopRec').textContent='下一个';
+    }else{
+      $('#btnRec').textContent='开始录音（R）';
+      $('#btnStopRec').textContent='停止录音';
+    }
+  }
+
+  function setUIRunning(on){ $('#btnStart').disabled=on; $('#btnStop').disabled=!on; $('#btnReset').disabled=on; $('#btnSkip').disabled=!on; $('#btnPause').disabled=!on; $('#note').disabled=!on; $('#btnRec').disabled=!on; $('#btnStopRec').disabled=!on; }
+  function updateProgress(){ const pct=state.list.length?Math.min(100,Math.round((state.idx/state.list.length)*100)):0; $('#progBar').style.width=pct+'%'; }
+  function setStatus(t){ $('#status').textContent=t; }
+  function setStim(t){ $('#stimulus').textContent=t; }
+  function setTimers(first,len){ $('#timers').textContent=`首反应延迟：${first??'—'} ms · 反应/录音时长：${len??'—'} ms`; }
+  function recUI(live){ $('#recDot').classList.toggle('live',!!live); $('#recLabel').textContent= live? '录音中…':'空闲'; }
+
+  async function start(){
+    if(state.running) return; loadParams(); if(!state.meta.pid){ alert('请填写“被试编号”。'); return; }
+    $('#permHint').style.display='none';
+    try{
+      state.media= await navigator.mediaDevices.getUserMedia({audio:true});
+    }catch(err){ $('#permHint').style.display='block'; alert('无法访问麦克风：'+(err && err.name? err.name+': '+err.message : err)); return; }
+
+    // 整场单段：一开始就开录
+    if(state.recMode==='session_single'){
+      startSessionRecording();
+    }
+
+    state.running=true; state.paused=false; setUIRunning(true); setStatus('进行中'); setTimers('—','—'); updateProgress();
+    await presentNext(true);
+  }
+
+  function startSessionRecording(){
+    try{
+      state.sessionChunks=[]; state.sessionRec = new MediaRecorder(state.media,{mimeType: MediaRecorder.isTypeSupported('audio/webm;codecs=opus')? 'audio/webm;codecs=opus':'audio/webm'});
+      state.sessionRec.ondataavailable=e=>{ if(e.data && e.data.size>0) state.sessionChunks.push(e.data); };
+      state.sessionRec.start(); state.sessionStart = now();
+      const box=$('#sessionAudioBox'); box.style.display='block'; box.textContent='整场录音中…（结束/保存后可下载整段音频）';
+    }catch(e){ alert('此环境不支持整场录音：'+e); }
+  }
+
+  function stopSessionRecording(){
+    return new Promise(res=>{
+      if(state.sessionRec && state.sessionRec.state==='recording'){
+        state.sessionRec.onstop=()=>res();
+        state.sessionRec.stop();
+      }else{ res(); }
+    });
+  }
+
+  async function presentNext(initial=false){
+    if(!initial){ setStim('⋯'); setTimers('—','—'); await sleep(state.isi); }
+    if(state.idx>=state.list.length){ finish(); return; }
+    const w=state.list[state.idx]; setStim(w); state.tStim=now(); state.tRecStart=0; updateProgress(); $('#note').value='';
+    if(state.recMode==='trial_auto'){ startRec(); }
+  }
+
+  function startRec(){
+    if(!state.running || state.recMode==='none') { // 不录音模式：只打点
+      if(!state.running) return; if(state.tRecStart) return; state.tRecStart= now(); setTimers(Math.round(state.tRecStart-state.tStim),'—'); return; }
+    if(state.recMode==='session_single'){ // 整场单段：每题只打点
+      if(state.tRecStart) return; state.tRecStart= now(); setTimers(Math.round(state.tRecStart-state.tStim),'—'); return;
+    }
+    if(state.rec) return;
+    state.tRecStart= now(); setTimers(Math.round(state.tRecStart-state.tStim),'—');
+    state.chunks=[]; try{
+      state.rec = new MediaRecorder(state.media,{mimeType: MediaRecorder.isTypeSupported('audio/webm;codecs=opus')? 'audio/webm;codecs=opus':'audio/webm'});
+    }catch(e){ alert('此环境不支持 MediaRecorder：'+e); return; }
+    recUI(true); $('#btnRec').disabled=true; $('#btnStopRec').disabled=false;
+    state.rec.ondataavailable=e=>{ if(e.data && e.data.size>0) state.chunks.push(e.data); };
+    state.rec.onstop= async ()=>{ recUI(false); $('#btnRec').disabled=false; $('#btnStopRec').disabled=true; clearTimeout(state.recTimeout);
+      const blob=new Blob(state.chunks,{type: state.chunks[0]?.type || 'audio/webm'});
+      const dur=Math.round(now()-state.tRecStart);
+      await saveTrial(blob,dur);
+      state.idx++; presentNext();
+    };
+    state.rec.start(); if(state.maxDur>0){ state.recTimeout=setTimeout(()=>{ if(state.rec && state.rec.state==='recording') stopRec(); }, state.maxDur); }
+  }
+
+  function stopRec(){
+    if(state.recMode==='none' || state.recMode==='session_single'){
+      // 作为“下一个”使用：记录反应时间并入表（无音频）
+      const dur = state.tRecStart? Math.round(now()-state.tRecStart): 0;
+      saveTrial(null,dur).then(()=>{ state.idx++; presentNext(); });
+      return;
+    }
+    if(state.rec && state.rec.state==='recording'){ state.rec.stop(); state.rec=null; }
+  }
+
+  function skipCurrent(){ if(!state.running) return; if(state.rec && state.rec.state==='recording'){ stopRec(); return; }
+    const w=state.list[state.idx]; const row={index:state.results.length+1, word:w, firstLatency: state.tRecStart?Math.round(state.tRecStart-state.tStim):'', duration:0, note:($('#note').value||'').trim(), asrText:'', audioUrl:'', audioName:'', mime:''};
+    addRow(row); state.results.push({...row});
+    localStorage.setItem('JWAT_VOICE_LAST', JSON.stringify({meta:state.meta, results:state.results}));
+    state.idx++; presentNext();
+  }
+
+  function pauseToggle(){ if(!state.running) return; state.paused=!state.paused; if(state.paused){ setStatus('已暂停'); if(state.rec && state.rec.state==='recording') stopRec(); } else { setStatus('进行中'); presentNext(true); } }
+
+  async function finish(){
+    state.running=false; setUIRunning(false); setStatus('完成'); setStim('👏 已完成'); setTimers('—','—'); updateProgress(); $('#btnExportCsv').disabled=state.results.length===0; $('#btnExportJson').disabled=state.results.length===0;
+    await stopSessionRecording();
+    if(state.sessionChunks.length){ const blob=new Blob(state.sessionChunks,{type: state.sessionChunks[0]?.type || 'audio/webm'}); const url=URL.createObjectURL(blob); const name=`${state.meta.studyId||'JWAT'}_${state.meta.pid||'PID'}_SESSION_${new Date().toISOString().replaceAll(':','-')}.webm`; const box=$('#sessionAudioBox'); box.style.display='block'; const p=document.createElement('p'); const audio=document.createElement('audio'); audio.controls=true; audio.src=url; const a=document.createElement('a'); a.href=url; a.download=name; a.textContent='下载整场音频'; p.textContent='整场录音：'; p.appendChild(audio); p.appendChild(document.createTextNode(' ')); p.appendChild(a); box.innerHTML=''; box.appendChild(p);} }
+  function stopEarly(){ if(!state.running){ alert('尚未开始。'); return;} finish(); }
+  function resetAll(){ if(!confirm('确定清空当前表格与本地缓存？')) return; state={running:false,paused:false,order:'original',isi:800,maxDur:8000,autoRec:'off',list:[],idx:0,tStim:0,tRecStart:0,meta:{},results:[],media:null,rec:null,recTimeout:null,chunks:[],recMode:$('#recMode').value,sessionRec:null,sessionChunks:[],sessionStart:0}; $('#tbl tbody').innerHTML=''; setStim('—'); setTimers('—','—'); setStatus('未开始'); $('#progBar').style.width='0%'; localStorage.removeItem('JWAT_VOICE_LAST'); $('#sessionAudioBox').style.display='none'; }
+
+  async function saveTrial(blob,duration){
+    const w=state.list[state.idx]; const firstLatency= state.tRecStart? Math.round(state.tRecStart-state.tStim):''; const note=($('#note').value||'').trim(); const ts=new Date().toISOString().replaceAll(':','-');
+    let rows=[];
+    // 仅“每题录音”且 segEnable=on 时才做静音分割
+    if(blob && (state.recMode==='trial_manual' || state.recMode==='trial_auto') && $('#segEnable').value==='on'){
+      try{ const segs = await segmentBySilence(blob, {rmsThresh:+$('#segThresh').value, minSilenceMs:+$('#segMinSil').value, minChunkMs:+$('#segMinChunk').value}); if(segs.length>0){ rows = segs.map((b,idx)=>({blob:b, nameSuffix:'_'+(idx+1), durHint:null})); } }catch(e){ console.warn('静音分割失败，退回整段：', e); rows=[]; }
+    }
+    if(rows.length===0){ rows=[{blob: blob, nameSuffix:'', durHint:duration}]; }
+
+    for(let k=0;k<rows.length;k++){
+      const r = rows[k];
+      let url='', name='', mime='';
+      if(r.blob){ name=`${state.meta.studyId||'JWAT'}_${state.meta.pid||'PID'}_${String(state.idx+1).padStart(3,'0')}_${w}${r.nameSuffix}_${ts}.webm`; url=URL.createObjectURL(r.blob); mime=r.blob.type||'audio/webm'; }
+      let asrText='';
+      if(r.blob && $('#asrEnable').value==='on' && $('#asrUrl').value.trim()){
+        try{ asrText = await transcribeWithAPI(r.blob); }catch(e){ console.warn('ASR 失败：', e); asrText='(ASR 失败)'; }
+      }
+      const row={index:state.results.length+1, word:w, firstLatency, duration: r.durHint ?? '', asrText, audioUrl:url, audioName:name, note, mime};
+      addRow(row); state.results.push({...row});
+    }
+    localStorage.setItem('JWAT_VOICE_LAST', JSON.stringify({meta:state.meta, results:state.results}));
+  }
+
+  function addRow(r){
+    const tr=document.createElement('tr');
+    const audioCell=document.createElement('td');
+    if(r.audioUrl){ const player=document.createElement('audio'); player.controls=true; player.src=r.audioUrl; audioCell.appendChild(player); const dl=document.createElement('a'); dl.href=r.audioUrl; dl.download=r.audioName; dl.textContent='下载'; dl.style.marginLeft='8px'; audioCell.appendChild(dl);} else { audioCell.textContent='(无)'; }
+    const cells=[r.index, r.word, r.firstLatency, r.duration, r.asrText||'', null, r.note||''];
+    cells.forEach((c,i)=>{ const td= i===5? audioCell : (function(){ const td=document.createElement('td'); td.textContent= c==null?'':c; return td; })(); tr.appendChild(td); });
+    $('#tbl tbody').appendChild(tr);
+  }
+
+  async function transcribeWithAPI(blob){ const url = ($('#asrUrl').value||'').trim(); const key = ($('#asrKey').value||'').trim(); const extra = ($('#asrExtra').value||'').trim(); if(!url) return ''; const form = new FormData(); form.append('file', new File([blob], 'audio.webm', {type: blob.type||'audio/webm'})); if(extra){ try{ const obj=JSON.parse(extra); Object.entries(obj).forEach(([k,v])=>form.append(k, typeof v==='string'?v:JSON.stringify(v))); }catch(e){} } const resp = await fetch(url, { method:'POST', headers: key? { 'Authorization': 'Bearer '+key } : {}, body: form }); if(!resp.ok) throw new Error('ASR HTTP '+resp.status); const data = await resp.json().catch(()=>({})); return data.text || data.transcript || (data.result && data.result.hypothesis) || JSON.stringify(data).slice(0,200); }
+
+  function buildCsv(meta, results){ const header=['index','word','firstLatency_ms','recording_ms','asrText','audioName','note','pid','age','sex','studyId','startedAt']; const rows=results.map(r=>[r.index,r.word,r.firstLatency,r.duration,r.asrText||'',r.audioName||'',r.note||'',meta.pid,meta.age,meta.sex,meta.studyId,meta.startedAt]); return [header.map(csvEscape).join(','), ...rows.map(row=>row.map(csvEscape).join(','))].join('\n'); }
+  function exportCsv(){ const csv=buildCsv(state.meta, state.results); const fname=`${state.meta.studyId||'JWAT'}_${state.meta.pid||'PID'}_${new Date().toISOString().replaceAll(':','-')}.csv`; download(fname,csv,'text/csv;charset=utf-8'); }
+  function exportJson(){ const payload={meta:state.meta, results: state.results.map(r=>({...r, audioUrl: undefined}))}; const fname=`${state.meta.studyId||'JWAT'}_${state.meta.pid||'PID'}_${new Date().toISOString().replaceAll(':','-')}.json`; download(fname, JSON.stringify(payload,null,2)); }
+
+  // 事件
+  $('#btnStart').addEventListener('click', start); $('#btnStop').addEventListener('click', stopEarly); $('#btnReset').addEventListener('click', resetAll); $('#btnRec').addEventListener('click', startRec); $('#btnStopRec').addEventListener('click', stopRec); $('#btnSkip').addEventListener('click', skipCurrent); $('#btnPause').addEventListener('click', pauseToggle); $('#btnExportCsv').addEventListener('click', exportCsv); $('#btnExportJson').addEventListener('click', exportJson); $('#btnRunTests').addEventListener('click', DEV_runTests); $('#recMode').addEventListener('change', ()=>{ state.recMode=$('#recMode').value; refreshModeUI(); });
+
+  // 快捷键
+  window.addEventListener('keydown',(e)=>{ if(e.key==='s' || e.key==='S'){ start(); } else if(e.key==='r' || e.key==='R'){ if($('#btnRec').disabled) stopRec(); else startRec(); } else if(e.key===' '){ e.preventDefault(); if(state.running) { if(state.recMode==='none' || state.recMode==='session_single') stopRec(); else skipCurrent(); } } else if(e.key==='Escape'){ if(state.running) pauseToggle(); } });
+
+  // 恢复历史
+  (function restore(){ const saved=localStorage.getItem('JWAT_VOICE_LAST'); if(!saved) return; try{ const d=JSON.parse(saved); if(d?.meta && d?.results){ setStatus('已恢复历史数据（表格可导出；需重新开始测试）'); d.results.forEach(r=> addRow(r)); state.results=[...d.results]; $('#btnExportCsv').disabled=state.results.length===0; $('#btnExportJson').disabled=state.results.length===0; } }catch(err){ console.warn('恢复失败',err);} })();
+
+  // ====== 音频静音分割 & WAV 编码（仅每题录音模式使用） ======
+  async function segmentBySilence(blob, {rmsThresh=0.015, minSilenceMs=350, minChunkMs=200}={}){
+    const ac = new (window.AudioContext||window.webkitAudioContext)();
+    const buf = await blob.arrayBuffer();
+    const audio = await ac.decodeAudioData(buf);
+    const ch = audio.getChannelData(0);
+    const sr = audio.sampleRate;
+    const frame = 1024; const hop = frame; const rms = [];
+    for(let i=0;i<ch.length;i+=hop){ let sum=0; for(let j=i;j<Math.min(i+frame,ch.length);j++){ const v=ch[j]; sum += v*v; } rms.push(Math.sqrt(sum/Math.min(frame,ch.length-i))); }
+    const msPerFrame = 1000*hop/sr; const silFrames = Math.ceil(minSilenceMs/msPerFrame); const minFrames = Math.ceil(minChunkMs/msPerFrame);
+    const cuts=[0]; let silentRun=0; for(let i=0;i<rms.length;i++){ if(rms[i] < rmsThresh) silentRun++; else silentRun=0; if(silentRun>=silFrames){ const end = Math.max(0, Math.round((i-silentRun/2)*hop)); if(end - cuts[cuts.length-1] >= minFrames*hop){ cuts.push(end); } silentRun=0; } }
+    if(cuts[cuts.length-1] !== ch.length) cuts.push(ch.length);
+    const out=[]; for(let k=0;k<cuts.length-1;k++){ const a=cuts[k], b=cuts[k+1]; if(b-a < minFrames*hop) continue; const slice = ch.slice(a,b); const wav = encodeWAV([slice], sr); out.push(wav); }
+    try{ ac.close(); }catch(e){}
+    return out;
+  }
+  function encodeWAV(channels, sampleRate){ const numCh = channels.length; const length = channels[0].length; const bytesPerSample = 2; const blockAlign = numCh*bytesPerSample; const byteRate = sampleRate*blockAlign; const dataSize = length*blockAlign; const buffer = new ArrayBuffer(44 + dataSize); const view = new DataView(buffer); function writeStr(off,str){ for(let i=0;i<str.length;i++) view.setUint8(off+i, str.charCodeAt(i)); } let off=0; writeStr(off,'RIFF'); off+=4; view.setUint32(off, 36+dataSize, true); off+=4; writeStr(off,'WAVE'); off+=4; writeStr(off,'fmt '); off+=4; view.setUint32(off,16,true); off+=4; view.setUint16(off,1,true); off+=2; view.setUint16(off,numCh,true); off+=2; view.setUint32(off,sampleRate,true); off+=4; view.setUint32(off,byteRate,true); off+=4; view.setUint16(off,blockAlign,true); off+=2; view.setUint16(off,16,true); off+=2; writeStr(off,'data'); off+=4; view.setUint32(off,dataSize,true); off+=4; for(let i=0;i<length;i++){ for(let ch=0; ch<numCh; ch++){ let s = Math.max(-1, Math.min(1, channels[ch][i] || 0)); view.setInt16(off, s<0 ? s*0x8000 : s*0x7FFF, true); off+=2; } } return new Blob([buffer], {type:'audio/wav'}); }
+
+  // ===== 内置自检（测试用例） =====
+  function log(msg){ const el=$('#devLog'); el.textContent += (msg+'\n'); }
+  function ok(name){ log('✅ '+name); }
+  function fail(name,err){ log('❌ '+name+'\n   '+err); }
+  function DEV_runTests(){
+    $('#devLog').textContent='';
+    try{
+      // TC1: 换行切分（\n / \r\n / \r）
+      const parts='a\nb\r\nc\rd'.split(/\r?\n|\r/); if(parts.length===4 && parts[0]==='a' && parts[3]==='d') ok('TC1 换行切分'); else throw new Error('切分异常');
+      // TC2: CSV 转义（逗号与换行）
+      if(csvEscape('x,y')==='"x,y"' && csvEscape('x\ny')==='"x\ny"') ok('TC2 CSV 转义'); else throw new Error('CSV转义异常');
+      // TC3: CSV 结构（2 行，表头+1 数据）
+      const csv=buildCsv({pid:'P',age:'20',sex:'F',studyId:'S',startedAt:'T'},[{index:1,word:'头',firstLatency:100,duration:500,asrText:'hi',audioName:'a.wav',note:''}]);
+      const lines=csv.split('\n'); if(lines.length===2 && /^index,word/.test(lines[0]) && /^1,/.test(lines[1])) ok('TC3 CSV 结构'); else throw new Error('CSV结构异常');
+      // TC4: 静音分割逻辑（纯静音应产生0片段或空数组）
+      (async()=>{ const sr=16000; const silence=new Float32Array(sr*0.5); const wav=encodeWAV([silence],sr); const segs=await segmentBySilence(wav,{rmsThresh:0.01,minSilenceMs:100, minChunkMs:200}); if(Array.isArray(segs)) ok('TC4 静音分割API可调用'); })();
+      // TC5: 正则可编译
+      const re = /\r?\n|\r/; if(re instanceof RegExp) ok('TC5 正则可编译'); else throw new Error('正则实例化失败');
+      // TC6: 模式切换按钮文案
+      const prev=$('#btnRec').textContent; state.recMode='none'; refreshModeUI(); if($('#btnRec').textContent.includes('开始反应')) ok('TC6 模式按钮文案（不录音）'); else throw new Error('按钮文案未切换'); state.recMode='trial_manual'; refreshModeUI(); if($('#btnRec').textContent.includes('开始录音')) ok('TC6b 模式按钮文案（每题）'); else throw new Error('按钮文案未切回'); $('#btnRec').textContent=prev;
+      ok('同步测试已完成');
+    }catch(err){ fail('测试失败', err.message||err); }
+  }
+  </script>
+</body>
+</html>

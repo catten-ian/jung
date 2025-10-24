@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>荣格词汇联想测试 - 带暂停功能</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a极速赛车开奖直播2a6c 0%, #2b5876 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.97);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 800px;
+            padding: 30极速赛车开奖直播px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        h1 i {
+            color: #6a11cb;
+            font-size: 32px;
+        }
+        
+        .instructions {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: left;
+            font-size: 15px;
+            line-height: 1.6;
+            border-left: 5px solid #6a11cb;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+        
+极速赛车开奖直播        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .word-display {
+            font-size: 42px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 30px 0;
+            min-height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            padding: 15px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 12px;
+        }
+        
+        .timer {
+            font-size: 18px;
+            margin: 15px 0;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .reaction-count {
+            font-size: 16px;
+            margin: 10px 0;
+            color: #6a11cb;
+            font-weight: 500;
+        }
+        
+        .time-markers {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .time-marker {
+            background-color: #e9ecef;
+            padding: 10px 15px;
+            border-radius: 8px;
+            min-width: 120px;
+            margin: 5px;
+        }
+        
+        .time-marker-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .time-marker-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3极速赛车开奖直播s ease;
+            box-shadow: 0 4px 8极速赛车开奖直播px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        #startBtn {
+            background-color: #4cd964;
+            color: white;
+        }
+        
+        #pauseBtn {
+            background-color: #ff9500;
+            color: white;
+        }
+        
+        #reactBtn {
+            background-color: #ff3b30;
+            color: white;
+        }
+        
+        #nextBtn {
+            background-color: #007aff;
+            color: white;
+        }
+        
+        #downloadBtn {
+            background-color: #6a11cb;
+            color: white;
+            margin: 20px auto;
+            display: none;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .progress-container {
+            margin-top: 30px;
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .results {
+            margin-top: 30px;
+            text-align: left;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .result-item {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .reaction-time {
+            color: #6c757d;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .sort-controls {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .sort-btn {
+            padding: 8px 极速赛车开奖直播16px;
+            font-size: 14px;
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        
+        .sort-btn.active {
+            background-color: #6a11cb;
+            color: white;
+            border-color: #6a11cb;
+        }
+        
+        .test-status {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .status-testing {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-paused {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .word-display {
+                font-size: 32px;
+            }
+            
+            button {
+                padding: 12px 20px;
+                font-size: 14px;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .sort-controls {
+                flex-direction: column;
+            }
+            
+            .time-markers {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .time-marker {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-brain"></i> 荣格词汇联想测试 - 带暂停功能</h1>
+        
+        <div class="instructions">
+            <p><strong>测试说明：</strong></p>
+            <ul>
+                <li>点击"开始测试"按钮开始</li>
+                <li>屏幕上会显示一个词语，此时开始计时</li>
+                <li>当您准备好说出联想到的词时，点击"记录反应"按钮</li>
+                <li>如果您有多个联想，可以多次点击"记录反应"按钮</li>
+                <li>测试过程中可以随时点击"暂停测试"暂停计时</li>
+                <li>完成所有反应后，点击"下一题"继续</li>
+                <li>测试完成后可以下载结果</li>
+            </ul>
+        </div>
+        
+        <div class="word-display" id="wordDisplay">准备开始...</div>
+        
+        <div class="timer" id="timer">当前时间: 0.0 秒</div>
+        <div class="reaction-count" id="reactionCount">反应次数: 0</div>
+        
+        <div class="test-status" id="testStatus"></div>
+        
+        <div class="time-markers" id="timeMarkers">
+            <!-- 时间标记点将在这里动态生成 -->
+        </div>
+        
+        <div class="controls">
+            <button id="startBtn">
+                <i class="fas fa-play"></i>开始测试
+            </button>
+            <button id="pauseBtn" disabled>
+                <i class="fas fa-pause"></i>暂停测试
+            </button>
+            <button id="reactBtn" disabled>
+                <i class="fas fa-check-circle"></i>记录反应
+            </button>
+            <button id="nextBtn" disabled>
+                <i class="fas fa-forward"></i>下一题
+            </button>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></极速赛车开奖直播div>
+            </div>
+            <div class="progress-text" id="progressText">进度: 0/100</div>
+        </div>
+        
+        <div class="sort-controls">
+            <button class="sort-btn" onclick="sortResults('word')">按词汇排序</button>
+            <button class="sort-btn active" onclick="sortResults('time')">按反应时间排序</button>
+        </div>
+        
+        <div class="results" id="results">
+            <h3><i class="fas fa-chart-bar"></i> 测试结果</h3>
+            <div id="resultList"></div>
+        </div>
+        
+        <button id="downloadBtn">
+            <i class="fas fa-download"></i>下载测试结果
+        </button>
+    </div>
+
+    <script>
+        // 荣格词汇联想测试的100个标准词汇
+        const wordList = [
+            "头", "绿色", "水", "唱歌", "死亡", "长", "船", "支付", "窗户", "友好",
+            "桌子", "问题", "跳舞", "湖泊", "生病", "骄傲", "做饭极速赛车开奖直播", "墨水", "生气", "针",
+            "游泳", "旅行", "蓝色", "极速赛车开奖直播灯", "犯罪", "种子", "善良", "箱子", "害怕", "床",
+            "红色", "亲吻", "女人", "工作", "深海", "生病", "骄傲", "黄色", "山脉", "死亡",
+            "盐", "新", "习俗", "祈祷", "钱", "愚蠢", "小册子", "失望", "道德", "镜子",
+            "胖", "书籍", "肮脏", "羽毛", "命令", "玩偶", "饥饿", "白色", "孩子", "游泳",
+            "希望", "香烟", "疯狂", "钉子", "油", "受害者", "舌头", "爱", "冷水", "舞蹈",
+            "港口", "害羞", "家庭", "粗暴", "警察", "高度", "姐妹", "战争", "瓶子", "疯狂",
+            "睡觉", "风暴", "国王", "奶酪", "血", "怜悯", "交谈", "未来", "请求", "亲吻",
+            "纯洁", "门", "选择", "羊毛", "害怕", "月亮", "步行", "生病", "愤怒", "油漆"
+        ];
+        
+        let currentIndex = 0;
+        let wordStartTime = 0;
+        let reactionTimes = [];
+        let currentReactions = [];
+        let testStarted = false;
+        let isPaused = false;
+        let timerInterval;
+        let pausedTime = 0;
+        let totalPausedTime = 0;
+        
+        const wordDisplay = document.getElementById('wordDisplay');
+        const timerElement = document.getElementById('timer');
+        const reactionCountElement = document.getElementById('reactionCount');
+        const testStatus = document.getElementById('testStatus');
+        const timeMarkers = document.getElementById('timeMarkers');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const reactBtn = document.getElementById('reactBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const results = document.getElementById('results');
+        const resultList = document.getElementById('resultList');
+        const sortButtons = document.querySelectorAll('.sort-btn');
+        
+        // 初始化事件监听
+        startBtn.addEventListener('click', startTest);
+        pauseBtn.addEventListener('click', togglePause);
+        reactBtn.addEventListener('click', recordReaction);
+        nextBtn.addEventListener('click', nextWord);
+        downloadBtn.addEventListener('click', downloadResults);
+        
+        // 开始测试
+        function startTest() {
+            testStarted = true;
+            isPaused = false;
+            currentIndex = 0;
+            reactionTimes = [];
+            totalPausedTime = 0;
+            startBtn.disabled = true;
+            pauseBtn.disabled = false;
+            reactBtn.disabled = false;
+            nextBtn.disabled = true;
+            
+            updatePauseButton();
+            displayWord();
+            updateProgress();
+            
+            // 隐藏结果区域
+            results.style.display = 'none';
+            downloadBtn.style.display = 'none';
+            
+            // 显示测试状态
+            showStatus('测试进行中', 'status-testing');
+        }
+        
+        // 显示当前词汇并开始计时
+        function displayWord() {
+            if (currentIndex < wordList.length) {
+                wordDisplay.textContent = wordList[currentIndex];
+                reactionCountElement.textContent = "反应次数: 0";
+                currentReactions = [];
+                
+                // 重置时间标记
+                timeMarkers.innerHTML = '';
+                
+                // 添加时间标记点
+                createTimeMarker("词汇出现时间", 0);
+                
+                // 开始计时
+                wordStartTime = new Date().getTime();
+                startTimer();
+            } else {
+                endTest();
+            }
+        }
+        
+        // 创建时间标记点
+        function createTimeMarker(label, time) {
+            const marker = document.createElement('div');
+            marker.className = 'time-marker';
+            marker.innerHTML = `
+                <div class="time-marker-label">${label}</div>
+                <div class="time-marker-value">${time.toFixed(2)} 秒</div>
+            `;
+            timeMarkers.appendChild(marker);
+        }
+        
+        // 开始计时
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (!isPaused) {
+                    const currentTime = new Date().getTime();
+                    const elapsedTime = (currentTime - wordStartTime - totalPausedTime) / 1000;
+                    timerElement.textContent = `当前时间: ${elapsedTime.toFixed(1)} 秒`;
+                }
+            }, 100);
+        }
+        
+        // 暂停/继续测试
+        function togglePause() {
+            if (!testStarted) return;
+            
+            isPaused = !isPaused;
+            
+            if (isPaused) {
+                // 记录暂停开始时间
+                pausedTime = new Date().getTime();
+                showStatus('测试已暂停', 'status-paused');
+            } else {
+                // 计算暂停时间并累加
+                const pauseDuration = new Date().getTime() - pausedTime;
+                totalPausedTime += pauseDuration;
+                showStatus('测试进行中', 'status-testing');
+            }
+            
+            updatePauseButton();
+        }
+        
+        // 更新暂停按钮状态
+        function updatePauseButton() {
+            if (isPaused) {
+                pauseBtn.innerHTML = '<i class="fas fa-play"></i>继续测试';
+                pauseBtn.style.backgroundColor = '#4cd964';
+            } else {
+                pauseBtn.innerHTML = '<i class="fas fa-pause"></i>暂停测试';
+                pauseBtn.style.backgroundColor = '#ff9500';
+            }
+        }
+        
+        // 显示状态信息
+        function showStatus(message, className) {
+            testStatus.textContent = message;
+            testStatus.className = 'test-status ' + className;
+            testStatus.style.display = 'block';
+        }
+        
+        // 记录反应时间
+        function recordReaction() {
+            if (!testStarted || isPaused) return;
+            
+            const currentTime = new Date().getTime();
+            const reactionTime = (currentTime - wordStartTime - totalPausedTime) / 1000;
+            
+            currentReactions.push({
+                time: reactionTime,
+                label: `反应 ${currentReactions.length + 1}`
+            });
+            
+            // 更新反应次数显示
+            reactionCountElement.textContent = `反应次数: ${currentReactions.length}`;
+            
+            // 添加时间标记点
+            createTimeMarker(`反应 ${currentReactions.length}`, reactionTime);
+            
+            // 启用下一题按钮
+            nextBtn.disabled = false;
+        }
+        
+        // 下一题
+        function nextWord() {
+            // 保存当前词汇的所有反应时间
+            if (currentReactions.length > 0) {
+                reactionTimes.push({
+                    word: wordList[currentIndex],
+                    reactions: [...currentReactions]
+                });
+            }
+            
+            currentIndex++;
+            nextBtn.disabled = true;
+            
+            clearInterval(timerInterval);
+            timerElement.textContent = "当前时间: 0.0 秒";
+            
+            // 重置暂停时间累计
+            totalPausedTime = 0;
+            
+            updateProgress();
+            
+            if (currentIndex < wordList.length) {
+                displayWord();
+            } else {
+                endTest();
+            }
+        }
+        
+        // 更新进度
+        function updateProgress() {
+            const progress = (currentIndex / wordList.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `进度: ${currentIndex}/${wordList.length}`;
+        }
+        
+        // 结束测试
+        function endTest() {
+            testStarted = false;
+            isPaused = false;
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            reactBtn.disabled = true;
+            nextBtn.disabled = true;
+            
+            wordDisplay.textContent = "测试完成！";
+            clearInterval(timerInterval);
+            timerElement.textContent = "当前时间: 0.0 秒";
+            
+            // 隐藏状态显示
+            testStatus.style.display = 'none';
+            
+            // 显示结果
+            showResults();
+            downloadBtn.style.display = 'flex';
+        }
+        
+        // 显示测试结果
+        function showResults() {
+            results.style.display = 'block';
+            sortResults('time');
+        }
+        
+        // 排序结果
+        function sortResults(type) {
+            // 更新排序按钮状态
+            sortButtons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            resultList.innerHTML = '';
+            
+            // 计算平均反应时间并排序
+            const resultsWithAvg = reactionTimes.map(item => {
+                const times = item.reactions.map(r => r.time);
+                const avg = times.reduce((a, b) => a + b, 0) / times.length;
+                return {
+                    word: item.word,
+                    reactions: item.reactions,
+                    average: avg
+                };
+            });
+            
+            if (type === 'word') {
+                resultsWithAvg.sort((a, b) => a.word.localeCompare(b.word));
+            } else {
+                resultsWithAvg.sort((a, b) => b.average - a.average);
+            }
+            
+            let totalAvg = 0;
+            let totalItems = 0;
+            
+            for (let i = 0; i < resultsWithAvg.length; i++) {
+                const item = resultsWithAvg[i];
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                
+                // 创建反应时间显示
+                const reactionTimes = item.reactions.map(r => 
+                    `${r.label}: ${r.time.toFixed(2)}秒`
+                ).join(', ');
+                
+                resultItem.innerHTML = `
+                    <div>
+                        <strong>${i+1}. ${item.word}</strong>
+                        <div style="font-size: 12px; color: #6c757d; margin-top: 5px;">
+                            反应时间: ${reactionTimes}
+                        </div>
+                    </div>
+                    <span class="reaction-time">平均: ${item.average.toFixed(2)} 秒</span>
+                `;
+                
+                resultList.appendChild(resultItem);
+                totalAvg += item.average;
+                totalItems++;
+            }
+            
+            // 添加总平均反应时间
+            if (totalItems > 0) {
+                const overallAvg = totalAvg / totalItems;
+                const avgItem = document.createElement('div');
+                avgItem.className = 'result-item';
+                avgItem.style.fontWeight = 'bold';
+                avgItem.style.marginTop = '15px';
+                avgItem.innerHTML = `
+                    <span><strong>总平均反应时间</strong></span>
+                    <span class极速赛车开奖直播="reaction-time"><strong>${overallAvg.toFixed(2)} 秒</strong></span>
+                `;
+                resultList.appendChild(avgItem);
+            }
+        }
+        
+        // 下载测试结果
+        function downloadResults() {
+            let csvContent = "刺激词汇,反应标签,反应时间(秒)\n";
+            
+            reactionTimes.forEach(item => {
+                item.reactions.forEach(reaction => {
+                    csvContent += `"${item.word}","${reaction.label}",${reaction.time.toFixed(2)}\n`;
+                });
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            const date = new Date().toLocaleDateString().replace(/\//g, '-');
+            
+            a.href = url;
+            a.download = `荣格测试结果_${date}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    </script>
+</body>
+</html>
