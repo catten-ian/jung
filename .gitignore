@@ -25,6 +25,9 @@ yarn-error.log*
 package-lock.json
 yarn.lock
 
+# 保留重要的词汇文件
+!jung-words.js
+
 # Python
 __pycache__/
 *.py[cod]
