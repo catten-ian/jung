@@ -1,200 +1,200 @@
-# 🎯 English Word Learning App
+# 荣格词汇联想测试 - 词汇验证工具
 
-一个现代化的英语单词学习应用，帮助用户通过多种方式学习和记忆英语单词。
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/yourusername/jung-word-association/blob/main/LICENSE)
+[![version](https://img.shields.io/badge/version-1.0.0-green.svg)](https://github.com/yourusername/jung-word-association)
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-2.0.0-green.svg)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
+这是一个用于荣格词汇联想测试的词汇验证和统计工具集。主要功能包括验证不同版本应用中使用的词汇数据一致性，以及生成词汇统计报告。
 
-## ✨ 功能特性
+## 项目简介
 
-### 🎓 学习模式
-- **顺序学习**: 按顺序逐个学习单词
-- **随机学习**: 随机显示单词，增加学习趣味性
-- **复习模式**: 重点复习错误或困难的单词
+荣格词汇联想测试（Jung Word Association Test）是由瑞士心理学家卡尔·荣格（Carl Jung）开发的一种心理测试方法，通过分析被测试者对一系列标准词汇的联想反应，来探索其无意识心理内容和情感模式。
 
-### 🎵 多媒体支持
-- **语音播放**: 支持单词发音播放
-- **音频控制**: 可调节播放速度和音量
-- **离线支持**: 本地音频文件支持
+本项目提供了：
+1. 标准的100个荣格测试词汇列表
+2. 词汇验证工具，确保不同版本应用使用相同的词汇
+3. 词汇统计分析功能
 
-### 📊 学习统计
-- **实时进度**: 显示学习进度和完成度
-- **正确率统计**: 跟踪学习效果
-- **时间记录**: 记录学习时长
+## 文件结构
 
-### ⚙️ 个性化设置
-- **显示时长**: 自定义单词显示时间
-- **自动播放**: 可选择是否自动播放发音
-- **主题切换**: 支持明暗主题切换
-- **字体大小**: 可调节字体大小
+```
+├── jung-words.js       # 荣格标准词汇列表及其分类信息
+├── validate-words.js   # 词汇一致性验证脚本
+├── index.html          # 主应用页面
+├── index-new.html      # 新应用页面（用于比较）
+├── index-old.html      # 旧应用页面（用于比较）
+├── test.py             # 测试脚本
+├── LICENSE             # 许可证文件
+├── CHANGELOG.md        # 版本更新日志
+└── README.md           # 项目说明文档（当前文件）
+```
 
-### 📱 响应式设计
-- **移动端优化**: 完美适配手机和平板
-- **现代化UI**: 采用最新的设计趋势
-- **流畅动画**: 丰富的交互动画效果
+## 核心文件说明
 
-## 🚀 快速开始
+### jung-words.js
 
-### 环境要求
-- 现代浏览器（Chrome 80+, Firefox 75+, Safari 13+）
-- Python 3.6+（用于本地服务器）
+包含荣格词汇联想测试使用的100个标准词汇，以及相关的分类和统计信息：
+- `JUNG_WORDS`: 100个标准词汇数组
+- `JUNG_WORD_CATEGORIES`: 词汇分类信息
+- `JUNG_WORDS_STATS`: 词汇统计数据
 
-### 安装步骤
+### validate-words.js
 
-1. **克隆项目**
+词汇一致性验证工具，主要功能：
+- 比较不同版本应用中的词汇列表
+- 检测词汇不一致和重复
+- 生成词汇统计报告
+- 支持浏览器和Node.js环境
+
+## 安装说明
+
+无需安装，直接克隆或下载本仓库即可使用：
+
 ```bash
-git clone https://github.com/your-username/english-word-learning-app.git
-cd english-word-learning-app
+git clone https://github.com/yourusername/jung-word-association.git
+cd jung-word-association
 ```
 
-2. **启动本地服务器**
+## 使用方法
+
+### 在Node.js环境中运行
+
+1. 验证词汇一致性：
 ```bash
-# 使用Python启动服务器
-python -m http.server 8000
-
-# 或使用Node.js
-npx http-server -p 8000
+node validate-words.js
 ```
 
-3. **访问应用**
-打开浏览器访问 `http://localhost:8000`
+### 在浏览器中使用
 
-### 文件结构
-```
-english-word-learning-app/
-├── index.html              # 原版应用
-├── index-new.html          # 现代化版本
-├── words/                  # 单词数据文件
-│   ├── cet4.txt           # CET-4词汇
-│   ├── cet6.txt           # CET-6词汇
-│   ├── toefl.txt          # TOEFL词汇
-│   └── ielts.txt          # IELTS词汇
-├── audio/                  # 音频文件目录
-├── css/                    # 样式文件
-├── js/                     # JavaScript文件
-├── README.md              # 项目说明
-├── LICENSE                # 开源协议
-└── .gitignore            # Git忽略文件
+1. 在HTML文件中引入必要的脚本：
+```html
+<script src="jung-words.js"></script>
+<script src="validate-words.js"></script>
 ```
 
-## 📖 使用指南
+2. 然后在浏览器控制台中调用：
+```javascript
+// 验证当前页面的词汇与标准词汇
+validateWordConsistency();
 
-### 基本操作
-
-1. **选择词汇表**: 从下拉菜单中选择要学习的词汇表
-2. **开始学习**: 点击"开始学习"按钮
-3. **控制播放**: 使用播放/暂停按钮控制学习进度
-4. **调整设置**: 在设置面板中自定义学习参数
-
-### 高级功能
-
-#### 自定义词汇表
-在 `words/` 目录下创建新的文本文件，格式如下：
-```
-word1 /pronunciation/ meaning
-word2 /pronunciation/ meaning
-...
+// 生成词汇统计报告
+generateWordStats();
 ```
 
-#### 添加音频文件
-将音频文件放入 `audio/` 目录，文件名与单词对应：
+## 功能详解
+
+### 1. 词汇一致性验证
+
+验证功能会：
+- 检查词汇数量是否一致
+- 比对每个位置的词汇是否相同
+- 检测词汇列表中的重复词汇
+- 在Node.js环境中自动检查index.html和index-new.html文件
+
+### 2. 词汇统计分析
+
+统计功能会生成：
+- 总词汇数量
+- 平均词汇长度
+- 词汇长度分布
+- 重复词汇统计（如有）
+- 词汇分类统计（如有分类数据）
+
+## 示例输出
+
+### 一致性验证输出
 ```
-audio/
-├── word1.mp3
-├── word2.mp3
-└── ...
+🔍 开始验证荣格词汇联想测试词汇一致性...
+
+🖥️ Node.js环境验证
+
+📄 index.html:
+  ✅ 词汇完全一致
+  📊 词汇数量: 100
+
+📄 index-new.html:
+  ❌ 发现不一致：
+    - 长度不匹配: 标准词汇(100) vs index-new.html(101)
+    - 位置 45: "小册子" vs "手册"
+  📊 词汇数量: 101
+
+🎯 验证完成
 ```
 
-## 🛠️ 技术栈
+### 统计报告输出
+```
+📈 荣格词汇统计报告
+===================================================
+总词汇数量: 100
+平均词汇长度: 2.3 字符
 
-- **前端**: HTML5, CSS3, JavaScript (ES6+)
-- **样式**: CSS Grid, Flexbox, CSS Variables
-- **音频**: Web Audio API
-- **存储**: LocalStorage
-- **构建**: 无需构建工具，纯静态文件
+词汇长度分布:
+  1字: 15个
+  2字: 78个
+  3字: 7个
 
-## 🎨 设计特色
+重复词汇: 生病, 骄傲, 死亡, 游泳, 疯狂, 害怕, 亲吻
+重复次数: 10
 
-### 现代化UI设计
-- **卡片式布局**: 清晰的信息层次
-- **柔和阴影**: 增强视觉深度
-- **流畅动画**: 提升用户体验
-- **响应式设计**: 适配各种设备
+词汇分类统计:
+  body: 3个
+  colors: 5个
+  emotions: 11个
+  actions: 10个
+  objects: 14个
+  nature: 10个
+  social: 7个
+  abstract: 21个
+```
 
-### 色彩系统
-- **主色调**: 渐变蓝紫色系
-- **辅助色**: 温暖的橙色和绿色
-- **中性色**: 现代化的灰色调
-- **语义色**: 清晰的状态指示
+## API参考
 
-## 📊 浏览器支持
+### 核心函数
 
-| 浏览器 | 版本 | 支持状态 |
-|--------|------|----------|
-| Chrome | 80+ | ✅ 完全支持 |
-| Firefox | 75+ | ✅ 完全支持 |
-| Safari | 13+ | ✅ 完全支持 |
-| Edge | 80+ | ✅ 完全支持 |
-| IE | - | ❌ 不支持 |
+#### `validateWordConsistency()`
+- 功能：验证词汇一致性
+- 参数：无
+- 返回值：无（直接在控制台输出结果）
 
-## 🤝 贡献指南
+#### `generateWordStats()`
+- 功能：生成词汇统计报告
+- 参数：无
+- 返回值：无（直接在控制台输出结果）
 
-我们欢迎所有形式的贡献！请查看 [CONTRIBUTING.md](CONTRIBUTING.md) 了解详细信息。
+#### `compareWordArrays(words1, words2, name1, name2)`
+- 功能：比较两个词汇数组
+- 参数：
+  - `words1`: 第一个词汇数组
+  - `words2`: 第二个词汇数组
+  - `name1`: 第一个数组的名称
+  - `name2`: 第二个数组的名称
+- 返回值：比较结果对象
 
-### 贡献方式
-- 🐛 报告Bug
-- 💡 提出新功能建议
-- 📝 改进文档
-- 🔧 提交代码修复
-- 🌍 翻译支持
+#### `extractWordsFromHTML(htmlContent, variableName)`
+- 功能：从HTML文件中提取词汇数组
+- 参数：
+  - `htmlContent`: HTML文件内容
+  - `variableName`: 变量名（默认为'wordList'）
+- 返回值：提取的词汇数组
 
-### 开发流程
-1. Fork 项目
-2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 创建 Pull Request
+## 注意事项
 
-## 📝 更新日志
+1. 荣格词汇列表中有意包含一些重复词汇，这是测试设计的一部分。
+2. 验证脚本会检测并报告重复词汇，但这不会被视为错误。
+3. 确保在使用前正确引入jung-words.js文件。
 
-查看 [CHANGELOG.md](CHANGELOG.md) 了解版本更新历史。
+## 许可证
 
-### 最新版本 v2.0.0
-- ✨ 全新现代化UI设计
-- 🎨 改进的视觉效果和动画
-- 📱 更好的移动端适配
-- ⚡ 性能优化和代码重构
-- 🔧 新增多项个性化设置
+本项目采用MIT许可证。详见[LICENSE](LICENSE)文件。
 
-## 📄 许可证
+## 贡献
 
-本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
+欢迎提交Issue和Pull Request来改进本项目。
 
-## 👥 作者
+## 更新日志
 
-- **Jung** - *初始开发* - [GitHub](https://github.com/your-username)
+详见[CHANGELOG.md](CHANGELOG.md)文件。
 
-## 🙏 致谢
+## 相关资源
 
-- 感谢所有贡献者的支持
-- 感谢开源社区提供的灵感
-- 特别感谢词汇数据提供方
-
-## 📞 联系方式
-
-- 项目主页: [GitHub Repository](https://github.com/your-username/english-word-learning-app)
-- 问题反馈: [Issues](https://github.com/your-username/english-word-learning-app/issues)
-- 邮箱: your-email@example.com
-
----
-
-⭐ 如果这个项目对你有帮助，请给它一个星标！
-
-## 🔗 相关链接
-
-- [在线演示](https://your-username.github.io/english-word-learning-app)
-- [开发文档](https://github.com/your-username/english-word-learning-app/wiki)
-- [API文档](https://github.com/your-username/english-word-learning-app/blob/main/docs/API.md)
+- [荣格词汇联想测试 - 维基百科](https://en.wikipedia.org/wiki/Word_association)
+- [卡尔·荣格心理学理论](https://en.wikipedia.org/wiki/Carl_Jung)
